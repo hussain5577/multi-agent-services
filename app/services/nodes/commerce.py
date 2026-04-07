@@ -1,10 +1,15 @@
 # app/services/nodes/commerce.py
 from app.services.state import AgentState
 from app.core.prompts import COMMERCE_PROMPT
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from app.core.config import settings
 
-llm = ChatGoogleGenerativeAI(model=settings.DEFAULT_MODEL, google_api_key=settings.GOOGLE_API_KEY)
+
+llm = ChatGroq(
+    model=settings.DEFAULT_MODEL,
+    groq_api_key=settings.GROQ_API_KEY,
+    temperature=0
+)
 async def commerce_node(state: AgentState):
     biz = state.get("business_context", {})
     prompt = COMMERCE_PROMPT.format(

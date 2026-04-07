@@ -6,7 +6,7 @@ load_dotenv()
 
 class Settings:
     # Change GOOGLE_API_KEY to GEMINI_API_KEY to match your .env
-    GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY").strip()
-    DEFAULT_MODEL = "gemini-3-flash-preview"
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY").strip()
+    DEFAULT_MODEL = "llama-3.3-70b-versatile"
 
 settings = Settings()

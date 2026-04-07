@@ -9,8 +9,7 @@ class AgentState(TypedDict):
     customer: Dict[str, Any]
     business_context: Dict[str, Any]
     inventory: List[Dict[str, Any]]
-    
-    # Internal Logic State
+ 
     intent: str
     confidence: float
     language: str

@@ -54,12 +54,27 @@ class ChatResponse(BaseModel):
 
 class IntentResponse(BaseModel):
     intent: Literal[
-        "product_inquiry", "create_order", "collect_variant", 
-        "collect_quantity", "collect_address", "collect_phone", 
-        "order_status", "faq", "complaint", "refund_request", 
-        "greeting", "unknown", "human_escalation"
+        "product_inquiry",
+        "create_order",
+        "collect_variant", 
+        "collect_quantity",
+        "collect_address",
+        "collect_phone", 
+        "order_status",
+        "faq", 
+        "complaint", 
+        "refund_request", 
+        "greeting",
+        "unknown",
+        "abusive",        
+        "off_topic",     
+        "human_escalation"
     ]
-    language: Literal["english", "urdu", "roman_urdu"]
+    language: Literal[
+        "english", 
+        "urdu", 
+        "roman_urdu"
+        ]
     confidence: float
 
 

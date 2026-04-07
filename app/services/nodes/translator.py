@@ -1,36 +1,68 @@
 # app/services/nodes/translator.py
+
 from app.services.state import AgentState
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from app.core.config import settings
 
-# 1. Initialize the LLM inside this file
-llm = ChatGoogleGenerativeAI(
-    model=settings.DEFAULT_MODEL, 
-    google_api_key=settings.GOOGLE_API_KEY,
+
+# Initialize once
+llm = ChatGroq(
+    model=settings.DEFAULT_MODEL,
+    groq_api_key=settings.GROQ_API_KEY,
     temperature=0
 )
 
+
 async def translator_node(state: AgentState):
+
+    # If safety already generated response → use it
+    response_text = state.get("response_message", "")
+
+    if not response_text:
+        # Fallback default message
+        response_text = (
+            "Shukriya aap ke message ka. "
+            "Hum jald aap ki madad karte hain."
+        )
+
     target_lang = state.get("language", "english")
-    current_text = state.get("response_message", "")
 
-    # 2. Logic to handle Roman Urdu translation
-    if target_lang == "roman_urdu" and current_text:
-        res = await llm.ainvoke(
-            f"Translate the following shop response into natural, friendly Roman Urdu (Latin script): {current_text}"
-        )
-        final_text = res.content
-    else:
-        final_text = current_text
+    # Only translate if Roman Urdu required
+    if target_lang == "roman_urdu":
 
-    # 3. CRITICAL: Pydantic String Enforcement
-    # If Gemini returns a list of dicts, extract the text string
-    if isinstance(final_text, list):
-        # Join all text parts if it's a list (common in newer LangChain/Gemini versions)
-        final_text = "".join(
-            [block.get("text", "") if isinstance(block, dict) else str(block) 
-             for block in final_text]
-        )
-    
-    # Final safety check: ensure it is a plain string
-    return {"response_message": str(final_text)}
+        prompt = f"""
+Translate the following shop response into natural,
+friendly Roman Urdu (Latin script).
+- Use Pakistani Roman Urdu style
+- Do NOT use Hindi words like:
+  Dhanyavad
+  Kripya
+  Aapka
+  Kripaya
+- Use Pakistani words like:
+  Shukriya
+  Barah-e-karam
+  Aap
+  Meherbani
+Text:
+{response_text}
+
+Rules:
+- Keep tone friendly
+- Keep meaning same
+- Use simple Roman Urdu
+"""
+
+        try:
+            res = await llm.ainvoke(prompt)
+            response_text = res.content.strip()
+
+        except Exception as e:
+            print(f"Translator Error: {e}")
+            # fallback → use original English text
+
+    # Always return clean string
+    return {
+        **state,
+        "response_message": str(response_text)
+    }

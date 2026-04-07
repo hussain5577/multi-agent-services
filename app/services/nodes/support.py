@@ -1,14 +1,16 @@
 # app/services/nodes/support.py
 from app.services.state import AgentState
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from app.core.config import settings
 from app.core.prompts import SUPPORT_PROMPT
 
 # Initialize LLM
-llm = ChatGoogleGenerativeAI(
-    model=settings.DEFAULT_MODEL, 
-    google_api_key=settings.GOOGLE_API_KEY,
-    temperature=0.3 # Slightly higher temperature for better empathy
+
+
+llm = ChatGroq(
+    model=settings.DEFAULT_MODEL,
+    groq_api_key=settings.GROQ_API_KEY,
+    temperature=0
 )
 
 async def support_node(state: AgentState):

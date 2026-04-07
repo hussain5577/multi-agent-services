@@ -1,13 +1,13 @@
 # app/services/nodes/classifier.py
 from app.schemas.chat import IntentResponse
 from app.services.state import AgentState  
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from app.core.config import settings
 from langchain_core.messages import HumanMessage, SystemMessage
 
-llm = ChatGoogleGenerativeAI(
+llm = ChatGroq(
     model=settings.DEFAULT_MODEL,
-    google_api_key=settings.GOOGLE_API_KEY,
+    groq_api_key=settings.GROQ_API_KEY,
     temperature=0
 )
 

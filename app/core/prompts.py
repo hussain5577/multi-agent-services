@@ -18,7 +18,9 @@ INTENT DEFINITIONS:
 10. refund_request: Specifically asking for money back.
 11. greeting: Simple hellos, "Assalam o Alaikum", or "Hi".
 12. unknown: Gibberish or irrelevant off-topic talk.
-13. human_escalation: Explicitly asking for a human or "Admin".
+13.abusive — insulting, rude, threatening language
+14.off_topic — unrelated topics (politics, jokes, random chat)
+15. human_escalation: Explicitly asking for a human or "Admin".
 
 OUTPUT RULES:
 - Detect Language: [english, urdu, roman_urdu].
