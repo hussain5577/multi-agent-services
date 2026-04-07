@@ -1,0 +1,32 @@
+# AION – AI Chat Module (Decision Engine)
+
+AION is a high-performance, multitenant AI Decision Engine built with **Python**, **FastAPI**, and **LangGraph**. It acts as the "brain" for Instagram commerce, processing DMs and comments to manage inventory inquiries, order flows, and customer support in both English and Roman Urdu.
+
+## 🚀 Overview
+AION receives structured chat events and business context, then decides the next best action—whether to reply to the customer, trigger a backend order draft, or escalate to a human agent. It is strictly a **decision engine** and does not handle Meta APIs or token storage directly.
+
+## 🏗️ Architecture
+The system uses a **Stateless Multi-Agent State Machine** architecture:
+- **FastAPI**: Handles the REST interface and multi-tenancy isolation.
+- **LangGraph**: Orchestrates the conversation flow and state transitions.
+- **Google Gemini 1.5**: Powers the reasoning, classification, and multilingual responses.
+- **Pydantic v2**: Ensures strict JSON schema validation for all inputs and outputs.
+
+## 📂 Project Structure
+```text
+aion-chatbot-service/
+├── app/
+│   ├── core/
+│   │   ├── config.py      # Environment & Gemini settings
+│   │   └── prompts.py     # System instructions (Intents & Roman Urdu)
+│   ├── schemas/
+│   │   └── chat.py        # Pydantic Models (Section 2 & 3 Validation)
+│   ├── services/
+│   │   ├── nodes.py       # Logic: Classifier, Commerce, & Translator
+│   │   ├── state.py       # TypedDict for LangGraph State
+│   │   └── graph.py       # Workflow & Edge logic
+│   ├── routes/
+│   │   └── chat_routes.py # FastAPI POST /process-chat
+│   └── main.py            # FastAPI Entry Point
+├── .env                   # API Keys (GOOGLE_API_KEY)
+└── requirements.txt       # Dependencies
