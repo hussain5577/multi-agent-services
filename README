@@ -1,8 +1,8 @@
-# 🤖 AION – AI Chat Module (Decision Engine as provided Doc)
+# 🤖 AION – AI Chat Module (Decision Engine)
 
 ## 📌 Overview
 
-**AION** is a high-performance, **multitenant AI Decision Engine** and its customer support module built with **Python, FastAPI, and LangGraph** for conceptual assessment test .
+**AION** is a high-performance, **multitenant AI Decision Engine** and customer support module built with **Python, FastAPI, and LangGraph** for a conceptual assessment test.
 
 It acts as the **agentic "brain"** for Instagram commerce, processing **DMs and comments** to manage:
 
@@ -15,21 +15,21 @@ The system supports **English**, **Urdu**, and **Roman Urdu**, making it ideal f
 
 ---
 
-# 🏗️ System Architecture & Logic Flow
+## 🏗️ System Architecture & Logic Flow
 
 AION operates as a **Stateless Multi-Agent State Machine**.
 
-Unlike a simple chatbot, it uses a **directed graph** to pass data through specialized **Nodes**, where each node performs a specific task.
+Unlike a simple chatbot, it uses a **directed graph** to pass data through specialized **nodes**, where each node performs a specific task.
 
 ---
 
-# 🧠 Decision Nodes (Agentic Logic)
+## 🧠 Decision Nodes (Agentic Logic)
 
-## 1️⃣ Classifier Node — Intent Detection
+### 1️⃣ Classifier Node — Intent Detection
 
 The **entry point** of the system.
 
-Responsibilities:
+**Responsibilities:**
 
 * Uses **Groq** to detect **1 of 13 intents**, such as:
 
@@ -44,11 +44,11 @@ Responsibilities:
 
 ---
 
-## 2️⃣ Commerce Node — Sales Engine
+### 2️⃣ Commerce Node — Sales Engine
 
 Acts as the **sales agent**.
 
-Responsibilities:
+**Responsibilities:**
 
 * Reads **inventory**
 * Uses **business_context**
@@ -62,7 +62,7 @@ Product → Variant → Address
 
 ---
 
-## 3️⃣ Support Node — Customer Care Engine
+### 3️⃣ Support Node — Customer Care Engine
 
 Handles:
 
@@ -78,23 +78,22 @@ Uses:
 
 ---
 
-## 4️⃣ Translator Node — Localization Engine
+### 4️⃣ Translator Node — Localization Engine
 
 Ensures responses sound **natural and human**, especially in **Roman Urdu**.
 
-Goal:
-
+**Goal:**
 Make responses feel like a **local Pakistani conversation**, not robotic translations.
 
 ---
 
-# 🔄 State Engine (AgentState)
+## 🔄 State Engine (AgentState)
 
 AION maintains a **TypedDict State** passed between nodes.
 
 This state acts as **short-term memory** during execution.
 
-Example:
+**Example:**
 
 If the **Classifier Node** detects:
 
@@ -110,7 +109,7 @@ The **Commerce Node** immediately knows:
 
 ---
 
-# 📡 Input Payload Example
+## 📡 Input Payload Example
 
 Every user interaction sends a **structured JSON payload**.
 
@@ -154,7 +153,7 @@ Every user interaction sends a **structured JSON payload**.
 
 ---
 
-# 🏗 Project Structure
+## 🏗 Project Structure
 
 ```bash
 aion-chatbot-service/
@@ -181,9 +180,9 @@ aion-chatbot-service/
 
 ---
 
-# 🛠 Installation & Setup
+## 🛠 Installation & Setup
 
-## 1️⃣ Clone the Repository
+### 1️⃣ Clone the Repository
 
 ```bash
 git clone <repo-link>
@@ -192,13 +191,13 @@ cd aion-chatbot-service
 
 ---
 
-## 2️⃣ Create Virtual Environment
+### 2️⃣ Create Virtual Environment
 
 ```bash
 python -m venv venv
 ```
 
-### Activate Environment
+#### Activate Environment
 
 **Windows**
 
@@ -214,7 +213,7 @@ source venv/bin/activate
 
 ---
 
-## 3️⃣ Install Dependencies
+### 3️⃣ Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -222,7 +221,7 @@ pip install -r requirements.txt
 
 ---
 
-## 4️⃣ Configure Environment Variables
+### 4️⃣ Configure Environment Variables
 
 Create a `.env` file:
 
@@ -232,7 +231,7 @@ GROQ_API_KEY=your_api_key_here
 
 ---
 
-## 5️⃣ Run the Server
+### 5️⃣ Run the Server
 
 ```bash
 uvicorn app.main:app --reload
@@ -246,7 +245,7 @@ http://127.0.0.1:8000/docs
 
 ---
 
-# ⚙️ How It Works (Step-by-Step)
+## ⚙️ How It Works (Step-by-Step)
 
 ### 1️⃣ Event Reception
 
@@ -319,7 +318,7 @@ Returns structured JSON:
 
 ---
 
-# 🧰 Technology Stack
+## 🧰 Technology Stack
 
 * **FastAPI** — REST API framework
 * **LangGraph** — Agent orchestration
@@ -330,7 +329,7 @@ Returns structured JSON:
 
 ---
 
-# 🔐 Environment & Security Notes
+## 🔐 Environment & Security Notes
 
 * Never commit `.env`
 * Store API keys securely
@@ -340,12 +339,12 @@ Returns structured JSON:
 .env
 venv/
 __pycache__/
-*.pyc etc
+*.pyc
 ```
 
 ---
 
-# 🚀 Key Features
+## 🚀 Key Features
 
 * Multi-agent architecture
 * Intent-based routing
@@ -358,17 +357,17 @@ __pycache__/
 
 ---
 
-# 🔮 Future Improvements
+## 🔮 Future Improvements
 
 * Redis caching
-* Order persistence database connect as required
+* Order persistence database integration
 * Multi-channel support
 * Analytics dashboard
 * Human escalation interface
 
 ---
 
-# 👨‍💻 Author
+## 👨‍💻 Author
 
 **Malindatech**
 AI Systems & Agentic Architecture Development 🚀
