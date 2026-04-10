@@ -1,32 +1,374 @@
-# AION – AI Chat Module (Decision Engine)
+# 🤖 AION – AI Chat Module (Decision Engine as provided Doc)
 
-AION is a high-performance, multitenant AI Decision Engine built with **Python**, **FastAPI**, and **LangGraph**. It acts as the "brain" for Instagram commerce, processing DMs and comments to manage inventory inquiries, order flows, and customer support in both English and Roman Urdu.
+## 📌 Overview
 
-## 🚀 Overview
-AION receives structured chat events and business context, then decides the next best action—whether to reply to the customer, trigger a backend order draft, or escalate to a human agent. It is strictly a **decision engine** and does not handle Meta APIs or token storage directly.
+**AION** is a high-performance, **multitenant AI Decision Engine** and its customer support module built with **Python, FastAPI, and LangGraph** for conceptual assessment test .
 
-## 🏗️ Architecture
-The system uses a **Stateless Multi-Agent State Machine** architecture:
-- **FastAPI**: Handles the REST interface and multi-tenancy isolation.
-- **LangGraph**: Orchestrates the conversation flow and state transitions.
-- **Google Gemini 1.5**: Powers the reasoning, classification, and multilingual responses.
-- **Pydantic v2**: Ensures strict JSON schema validation for all inputs and outputs.
+It acts as the **agentic "brain"** for Instagram commerce, processing **DMs and comments** to manage:
 
-## 📂 Project Structure
+* Product inquiries
+* Order flows
+* Inventory checks
+* Customer support
+
+The system supports **English**, **Urdu**, and **Roman Urdu**, making it ideal for localized e-commerce automation.
+
+---
+
+# 🏗️ System Architecture & Logic Flow
+
+AION operates as a **Stateless Multi-Agent State Machine**.
+
+Unlike a simple chatbot, it uses a **directed graph** to pass data through specialized **Nodes**, where each node performs a specific task.
+
+---
+
+# 🧠 Decision Nodes (Agentic Logic)
+
+## 1️⃣ Classifier Node — Intent Detection
+
+The **entry point** of the system.
+
+Responsibilities:
+
+* Uses **Groq** to detect **1 of 13 intents**, such as:
+
+  * `product_inquiry`
+  * `create_order`
+  * `human_escalation`
+* Detects language:
+
+  * English
+  * Urdu
+  * Roman Urdu
+
+---
+
+## 2️⃣ Commerce Node — Sales Engine
+
+Acts as the **sales agent**.
+
+Responsibilities:
+
+* Reads **inventory**
+* Uses **business_context**
+* Checks stock levels
+* Calculates totals
+* Manages ordering funnel:
+
 ```text
+Product → Variant → Address
+```
+
+---
+
+## 3️⃣ Support Node — Customer Care Engine
+
+Handles:
+
+* Complaints
+* Refund requests
+* Policy-based responses
+
+Uses:
+
+* Shipping policy
+* Return policy
+* Business support rules
+
+---
+
+## 4️⃣ Translator Node — Localization Engine
+
+Ensures responses sound **natural and human**, especially in **Roman Urdu**.
+
+Goal:
+
+Make responses feel like a **local Pakistani conversation**, not robotic translations.
+
+---
+
+# 🔄 State Engine (AgentState)
+
+AION maintains a **TypedDict State** passed between nodes.
+
+This state acts as **short-term memory** during execution.
+
+Example:
+
+If the **Classifier Node** detects:
+
+```text
+product_inquiry
+```
+
+The **Commerce Node** immediately knows:
+
+* Which product
+* Which variant
+* Which customer
+
+---
+
+# 📡 Input Payload Example
+
+Every user interaction sends a **structured JSON payload**.
+
+```json
+{
+  "conversation_id": "abc123",
+  "channel": "instagram_dm",
+  "customer": {
+    "name": "Ali",
+    "username": "ali_92",
+    "language": "auto"
+  },
+  "business_context": {
+    "business_name": "Malind Store",
+    "tone": "friendly",
+    "shipping_policy": "3-5 working days",
+    "return_policy": "7-day exchange",
+    "payment_methods": ["COD"]
+  },
+  "inventory": [
+    {
+      "product_id": "p1",
+      "name": "Black Hoodie",
+      "price": 3500,
+      "variants": ["S", "M", "L"],
+      "stock": {
+        "S": 5,
+        "M": 2,
+        "L": 0
+      }
+    }
+  ],
+  "conversation_history": [
+    {
+      "role": "user",
+      "message": "Do you have black hoodie in medium?"
+    }
+  ]
+}
+```
+
+---
+
+# 🏗 Project Structure
+
+```bash
 aion-chatbot-service/
 ├── app/
 │   ├── core/
-│   │   ├── config.py      # Environment & Gemini settings
-│   │   └── prompts.py     # System instructions (Intents & Roman Urdu)
-│   ├── schemas/
-│   │   └── chat.py        # Pydantic Models (Section 2 & 3 Validation)
-│   ├── services/
-│   │   ├── nodes.py       # Logic: Classifier, Commerce, & Translator
-│   │   ├── state.py       # TypedDict for LangGraph State
-│   │   └── graph.py       # Workflow & Edge logic
+│   │   ├── config.py       # Groq API & Environment settings
+│   │   └── prompts.py      # Node instructions (Intents & Roman Urdu logic)
 │   ├── routes/
-│   │   └── chat_routes.py # FastAPI POST /process-chat
-│   └── main.py            # FastAPI Entry Point
-├── .env                   # API Keys (GOOGLE_API_KEY)
-└── requirements.txt       # Dependencies
+│   │   └── chat_routes.py  # POST /api/v1/process-chat
+│   ├── schemas/
+│   │   └── chat.py         # Pydantic v2 Models (Input/Output Validation)
+│   ├── services/
+│   │   ├── nodes/          # Agentic Nodes
+│   │   │   ├── classifier.py
+│   │   │   ├── commerce.py
+│   │   │   ├── support.py
+│   │   │   └── translator.py
+│   │   ├── graph.py        # LangGraph Workflow & Edge Routing
+│   │   └── state.py        # AgentState TypedDict
+│   └── main.py             # FastAPI Entry Point
+├── .env                    # GROQ_API_KEY
+└── requirements.txt        # Dependencies
+```
+
+---
+
+# 🛠 Installation & Setup
+
+## 1️⃣ Clone the Repository
+
+```bash
+git clone <repo-link>
+cd aion-chatbot-service
+```
+
+---
+
+## 2️⃣ Create Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+### Activate Environment
+
+**Windows**
+
+```bash
+venv\Scripts\activate
+```
+
+**macOS / Linux**
+
+```bash
+source venv/bin/activate
+```
+
+---
+
+## 3️⃣ Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 4️⃣ Configure Environment Variables
+
+Create a `.env` file:
+
+```env
+GROQ_API_KEY=your_api_key_here
+```
+
+---
+
+## 5️⃣ Run the Server
+
+```bash
+uvicorn app.main:app --reload
+```
+
+API documentation will be available at:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
+# ⚙️ How It Works (Step-by-Step)
+
+### 1️⃣ Event Reception
+
+`chat_routes.py` receives the payload and validates it using **Pydantic**.
+
+---
+
+### 2️⃣ State Initialization
+
+Payload is converted into:
+
+```text
+AgentState
+```
+
+---
+
+### 3️⃣ Classification
+
+`classifier_node` determines:
+
+* User intent
+* Language
+
+---
+
+### 4️⃣ Routing
+
+`graph.py` routes the flow.
+
+Example:
+
+```text
+product_inquiry → commerce_node
+```
+
+---
+
+### 5️⃣ Logic Processing
+
+The selected node:
+
+* Reads business context
+* Reads inventory
+* Generates a raw response
+
+---
+
+### 6️⃣ Translation & Polishing
+
+`translator_node` ensures:
+
+* Natural tone
+* Correct language
+* Roman Urdu fluency
+
+---
+
+### 7️⃣ Output
+
+Returns structured JSON:
+
+```json
+{
+  "response_message": "Yes, Black Hoodie in Medium is available.",
+  "intent": "product_inquiry",
+  "backend_action": null
+}
+```
+
+---
+
+# 🧰 Technology Stack
+
+* **FastAPI** — REST API framework
+* **LangGraph** — Agent orchestration
+* **Groq (LPU Technology)** — Ultra-fast inference
+* **Pydantic v2** — Data validation
+* **Python 3.10+**
+* **AsyncIO**
+
+---
+
+# 🔐 Environment & Security Notes
+
+* Never commit `.env`
+* Store API keys securely
+* Add to `.gitignore`:
+
+```bash
+.env
+venv/
+__pycache__/
+*.pyc etc
+```
+
+---
+
+# 🚀 Key Features
+
+* Multi-agent architecture
+* Intent-based routing
+* Inventory-aware commerce logic
+* Roman Urdu localization
+* Multitenant-ready design
+* Stateless execution model
+* Production-grade validation
+* Scalable agentic workflow
+
+---
+
+# 🔮 Future Improvements
+
+* Redis caching
+* Order persistence database connect as required
+* Multi-channel support
+* Analytics dashboard
+* Human escalation interface
+
+---
+
+# 👨‍💻 Author
+
+**Malindatech**
+AI Systems & Agentic Architecture Development 🚀
